@@ -184,7 +184,7 @@ export default function PlanPage() {
                 {day.day} — <small>{day.focus}</small>
               </h3>
 
-              {day.exercises.map((ex, j) => (
+              {(day.exercises ?? []).map((ex, j) => (
                 <div key={j} style={{ marginBottom: "6px" }}>
                   <b>{ex.name}</b> — {ex.sets} sets × {ex.reps} reps
                   {ex.notes && (

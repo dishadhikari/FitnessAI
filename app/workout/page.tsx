@@ -32,7 +32,7 @@ export default function PlanPage() {
 
   useEffect(() => {
     const fetchPlan = async () => {
-      const res = await fetch(`http://localhost:5000/get-plan/${id}`);
+      const res = await fetch(`http://localhost:5000/getplan/${id}`);
       const data = await res.json();
 
       setPlan(data.plan); // because we stored JSONB in DB

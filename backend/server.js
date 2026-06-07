@@ -24,8 +24,6 @@ app.post("/generateplan",async(req,res)=>{
     const answers=req.body; 
 
     const prompt=buildprompt(answers);
-    console.log("PROMPT:", prompt);
-    console.log("🔥 XAI KEY:", process.env.GROQ_API_KEY);
     const response=await axios.post("https://api.groq.com/openai/v1/chat/completions",{
         model:"llama-3.1-8b-instant",
         messages: [
@@ -59,15 +57,17 @@ app.post("/generateplan",async(req,res)=>{
 app.post("/saveplan",async(req,res)=>{
     const {userid,plan}=req.body;
     const result=await pool.query("insert into workout(userid,goal,level,plan) values ($1,$2,$3,$4) returning *",
-    [userid,plan.goal,plan.level,plan]);
+    [userid,plan.goal,plan.level,JSON.stringify(plan)]);
     res.json(result.rows[0]);
 });
 
 app.get("/getplan/:id",async(req,res)=>{
     const {id}=req.params;
     const result=await pool.query("select*from workout where id=$1",[id]);
-    res.json(result.rows[0]);
-})
+    res.json({
+    ...row,
+    plan:JSON.parse(result.rows[0].plan)});
+});
 
 app.listen(5000,()=>{
     console.log("Server is running on port 5000 successfully");
