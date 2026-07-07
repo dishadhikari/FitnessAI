@@ -1,9 +1,7 @@
 module.exports=function buildprompt(answers){
     return`
 You are an expert certified fitness coach and sports scientist.
-
 Your job is to generate a SAFE, realistic, and structured 7-day workout plan.
-
 IMPORTANT RULES:
 - Return ONLY valid JSON (no markdown, no explanation)
 - Do NOT include any extra text

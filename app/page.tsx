@@ -8,9 +8,10 @@ export default function Home()
       Get AI-powered personalized workout plans and real-time computer vision to track exercise execution and progress of your workouts
       <nav>
         <a href="/plan">Plan AI</a><br></br>
-        <a href="#">News</a><br></br>
+        <a href="/news">News</a><br></br>
         <a href="#">Nearby Gyms</a><br></br>
         <a href="#">Blogs</a><br></br>
+        <a href="/dashboard">My Workouts</a><br></br>
           <button>
           <a href="/login">Log In/Sign Up</a>
           </button> <br></br>

@@ -17,13 +17,12 @@ type DayPlan = {
 };
 
 type Plan = {
-  id: number;
   goal: string;
   level: string;
   weekPlan: DayPlan[];
 };
 
-export default function PlanPage() {
+export default function WorkoutPage() {
   const { id } = useParams();
   const router = useRouter();
 
@@ -31,18 +30,35 @@ export default function PlanPage() {
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
 
   useEffect(() => {
-    const fetchPlan = async () => {
-      const res = await fetch(`http://localhost:5000/getplan/${id}`);
-      const data = await res.json();
+    const fetchWorkout = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:5000/getplan/${id}`
+        );
 
-      setPlan(data.plan); // because we stored JSONB in DB
+        const data = await res.json();
+
+        // Your backend returns:
+        // {
+        //   id,
+        //   userid,
+        //   goal,
+        //   level,
+        //   plan
+        // }
+
+        setPlan(data.plan);
+
+      } catch (err) {
+        console.log(err);
+      }
     };
 
-    fetchPlan();
+    fetchWorkout();
   }, [id]);
 
   if (!plan) {
-    return <p style={{ padding: 20 }}>Loading plan...</p>;
+    return <p style={{ padding: 20 }}>Loading workout...</p>;
   }
 
   return (
@@ -50,10 +66,13 @@ export default function PlanPage() {
       <h1>🏋️ Your Workout Plan</h1>
 
       <p>
-        <b>Goal:</b> {plan.goal} | <b>Level:</b> {plan.level}
+        <b>Goal:</b> {plan.goal}
       </p>
 
-      {/* DAYS GRID */}
+      <p>
+        <b>Level:</b> {plan.level}
+      </p>
+
       <div
         style={{
           display: "grid",
@@ -67,49 +86,55 @@ export default function PlanPage() {
             key={index}
             onClick={() => setSelectedDay(index)}
             style={{
-              border: "1px solid #ddd",
-              padding: 15,
+              border: "1px solid #ccc",
               borderRadius: 10,
+              padding: 15,
               cursor: "pointer",
-              background: selectedDay === index ? "#f0f8ff" : "white",
+              background:
+                selectedDay === index ? "#f0f8ff" : "white",
             }}
           >
-            <h3>
-              {day.day} — {day.focus}
-            </h3>
+            <h3>{day.day}</h3>
+
+            <p>{day.focus}</p>
+
             <p>{day.exercises.length} exercises</p>
           </div>
         ))}
       </div>
 
-      {/* DAY DETAILS */}
       {selectedDay !== null && (
         <div
           style={{
             marginTop: 30,
-            padding: 20,
             border: "2px solid black",
             borderRadius: 10,
+            padding: 20,
           }}
         >
           <h2>
-            {plan.weekPlan[selectedDay].day} Workout —{" "}
+            {plan.weekPlan[selectedDay].day} -{" "}
             {plan.weekPlan[selectedDay].focus}
           </h2>
 
-          {plan.weekPlan[selectedDay].exercises.map((ex, i) => (
+          {plan.weekPlan[selectedDay].exercises.map((exercise, index) => (
             <div
-              key={i}
+              key={index}
               style={{
-                padding: 10,
+                marginBottom: 15,
                 borderBottom: "1px solid #ddd",
+                paddingBottom: 10,
               }}
             >
-              <b>{ex.name}</b>
+              <b>{exercise.name}</b>
+
               <p>
-                {ex.sets} sets × {ex.reps} reps
+                {exercise.sets} sets × {exercise.reps} reps
               </p>
-              {ex.notes && <small>💡 {ex.notes}</small>}
+
+              {exercise.notes && (
+                <small>💡 {exercise.notes}</small>
+              )}
             </div>
           ))}
 
@@ -118,7 +143,7 @@ export default function PlanPage() {
               router.push(`/workout/${id}/${selectedDay}`)
             }
             style={{
-              marginTop: 15,
+              marginTop: 20,
               padding: "10px 15px",
               background: "black",
               color: "white",

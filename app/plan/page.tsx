@@ -200,14 +200,16 @@ export default function PlanPage() {
           {/* USE PLAN BUTTON */}
           <button
             onClick={async() => {
-               const res=await fetch("http://localhost:5000/saveplan", {
+              const token=localStorage.getItem("token");
+              const res=await fetch("http://localhost:5000/saveplan", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({userid:1,plan}),
+                headers: { "Content-Type": "application/json" ,
+                Authorization:`Bearer ${token}`
+                },
+                body:JSON.stringify({plan}),
               });
               const saved=await res.json();
-              alert("Plan saved successfully 💪");
-              router.push(`/plan/${saved.id}`);
+              router.replace("/dashboard");
             }}
             style={{
               marginTop: "15px",
